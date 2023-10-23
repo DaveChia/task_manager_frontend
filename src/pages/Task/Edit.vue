@@ -1,5 +1,5 @@
 <template>
-  <Loading v-if="isLoading" />
+  <Loading @submit.prevent="submitForm" v-if="isLoading" />
   <form v-else>
     <div class="space-y-12">
       <div class="border-b border-gray-900/10 pb-12">
@@ -19,7 +19,7 @@
                 class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
               >
                 <input
-                  v-model="taskName"
+                  v-model="form.name"
                   type="text"
                   name="name"
                   id="name"
@@ -29,6 +29,9 @@
                 />
               </div>
             </div>
+            <ValidationErrors
+              :validationErrors="taskNameValidationErrors"
+            ></ValidationErrors>
           </div>
 
           <div class="col-span-full">
@@ -41,11 +44,14 @@
               <textarea
                 id="description"
                 name="description"
-                v-model="taskDescription"
+                v-model="form.description"
                 rows="3"
                 class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
             </div>
+            <ValidationErrors
+              :validationErrors="taskDescriptionValidationErrors"
+            ></ValidationErrors>
           </div>
         </div>
       </div>
@@ -53,20 +59,27 @@
 
     <div class="mt-6 flex items-center justify-end gap-x-6">
       <button
-        @click="navigateToIndexPage"
+        @click.prevent="navigateToIndexPage"
         type="button"
         class="text-sm font-semibold leading-6 text-gray-900"
       >
         Cancel
       </button>
       <button
-        type="submit"
+        @click.prevent="toggleConfirmationDialog"
         class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         Save
       </button>
     </div>
   </form>
+
+  <ActionConfirmationDialog
+    v-if="isConfirmationDialogOpen"
+    @confirm-action="submitForm"
+    @cancel-action="toggleConfirmationDialog"
+  >
+  </ActionConfirmationDialog>
 </template>
 
 <script setup>
@@ -74,13 +87,19 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { fetchData } from "/utilities/httpUtils.js";
 import Loading from "/src/components/Loading.vue";
+import ValidationErrors from "/src/components/ValidationErrors.vue";
+import ActionConfirmationDialog from "/src/components/ActionConfirmationDialog.vue";
 
 const router = useRouter();
-
 const taskId = router.currentRoute.value.query.id;
-const taskName = ref(null);
-const taskDescription = ref(null);
 const isLoading = ref(true);
+const taskNameValidationErrors = ref([]);
+const taskDescriptionValidationErrors = ref([]);
+const isConfirmationDialogOpen = ref(false);
+const form = ref({
+  name: null,
+  description: null,
+});
 
 onMounted(async () => {
   getTaskData();
@@ -96,15 +115,47 @@ const getTaskData = async () => {
     console.error("Error:", result.error);
   } else {
     // Set the data
-    console.log(result);
-
-    taskName.value = result.data.name;
-    taskDescription.value = result.data.description;
+    form.value.name = result.data.name;
+    form.value.description = result.data.description;
     isLoading.value = false;
   }
 };
 
 const navigateToIndexPage = () => {
   router.push({ name: "task.index" });
+};
+
+const toggleConfirmationDialog = () => {
+  isConfirmationDialogOpen.value = !isConfirmationDialogOpen.value;
+};
+
+const submitForm = async () => {
+  toggleConfirmationDialog();
+
+  const url = "http://127.0.0.1:8000/api/tasks/" + taskId;
+
+  const result = await fetchData(url, "PUT", form.value);
+
+  if ("error" in result) {
+    // Handle the error
+    console.error("Error:", result.error);
+  } else if ("errors" in result) {
+    handleValidationErrors(result.errors);
+  } else {
+    navigateToIndexPage();
+  }
+};
+
+const handleValidationErrors = (errors) => {
+  for (const [key, value] of Object.entries(errors)) {
+    switch (key) {
+      case "name":
+        taskNameValidationErrors.value = value;
+        break;
+      case "description":
+        taskDescriptionValidationErrors.value = value;
+        break;
+    }
+  }
 };
 </script>
