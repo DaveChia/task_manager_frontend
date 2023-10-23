@@ -23,7 +23,10 @@
             class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg"
           >
             <table class="min-w-full divide-y divide-gray-300">
-              <thead class="bg-gray-50">
+              <div class="text-center p-4" v-if="tasks.length == 0">
+                <p class="text-gray-600 text-lg">No records found</p>
+              </div>
+              <thead class="bg-gray-50" v-else>
                 <tr>
                   <th
                     scope="col"
@@ -43,10 +46,6 @@
                   >
                     Completed
                   </th>
-
-                  <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                    <span class="sr-only">Edit</span>
-                  </th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
@@ -59,7 +58,18 @@
                   </td>
 
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ task.completed_at == null ? "-" : task.completed_at }}
+                    <component
+                      :is="CheckIcon"
+                      class="h-6 w-6 shrink-0 text-green-600"
+                      aria-hidden="true"
+                      v-if="task.completed == true"
+                    />
+                    <component
+                      :is="XMarkIcon"
+                      class="h-6 w-6 shrink-0 text-red-600"
+                      aria-hidden="true"
+                      v-else
+                    />
                   </td>
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
@@ -107,6 +117,7 @@ import { useRouter } from "vue-router";
 import { fetchData } from "/utilities/httpUtils.js";
 import Loading from "/src/components/Loading.vue";
 import Dialog from "/src/components/Dialog.vue";
+import { CheckIcon, XMarkIcon } from "@heroicons/vue/20/solid";
 
 onMounted(async () => {
   getTasksData();

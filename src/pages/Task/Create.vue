@@ -53,6 +53,35 @@
             ></ValidationErrors>
           </div>
         </div>
+
+        <div class="mt-10 space-y-10">
+          <fieldset>
+            <legend class="text-sm font-semibold leading-6 text-gray-900">
+              Details
+            </legend>
+            <div class="mt-6 space-y-6">
+              <div class="relative flex gap-x-3">
+                <div class="flex h-6 items-center">
+                  <input
+                    id="comments"
+                    name="comments"
+                    v-model="form.completed"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                  />
+                </div>
+                <div class="text-sm leading-6">
+                  <label for="comments" class="font-medium text-gray-900"
+                    >Completed</label
+                  >
+                  <p class="text-gray-500">
+                    Mark whether a task has been completed.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+        </div>
       </div>
     </div>
 
@@ -95,6 +124,7 @@ const isConfirmationDialogOpen = ref(false);
 const form = ref({
   name: null,
   description: null,
+  completed: false,
 });
 
 const navigateToIndexPage = () => {
@@ -112,6 +142,7 @@ const submitForm = async () => {
     // Handle the error
     console.error("Error:", result.error);
   } else if ("errors" in result) {
+    console.log(result);
     handleValidationErrors(result.errors);
   } else {
     navigateToIndexPage();
