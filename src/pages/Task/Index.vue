@@ -35,13 +35,13 @@
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Date
+                    Description
                   </th>
                   <th
                     scope="col"
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
-                    Created By
+                    Completed At
                   </th>
 
                   <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
@@ -50,24 +50,31 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr v-for="person in people" :key="person.email">
-                  <td
-                    class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
-                  >
-                    {{ person.name }}
+                <tr v-for="task in tasks" :key="task.id">
+                  <td class="px-3 py-4 whitespace-nowrap truncate max-w-xs">
+                    {{ task.name }}
                   </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ person.title }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ person.email }}
+                  <td class="px-3 py-4 whitespace-nowrap truncate max-w-xs">
+                    {{ task.description == null ? "-" : task.description }}
                   </td>
 
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ task.completed_at == null ? "-" : task.completed_at }}
+                  </td>
                   <td
                     class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                   >
-                    <a href="#" class="text-indigo-600 hover:text-indigo-900"
-                      >Edit<span class="sr-only">, {{ person.name }}</span></a
+                    <a
+                      href="#"
+                      @click="showDescription(task.description)"
+                      class="text-indigo-600 hover:text-indigo-900 mr-2"
+                      >Description</a
+                    >
+                    <a
+                      href="#"
+                      @click="showEditDialog(task)"
+                      class="text-indigo-600 hover:text-indigo-900"
+                      >Edit<span class="sr-only">, {{ task.name }}</span></a
                     >
                   </td>
                 </tr>
@@ -78,6 +85,22 @@
       </div>
     </div>
   </div>
+
+  <Dialog v-show="isDialogOpen">
+    <h2 class="mb-8 font-bold">Description</h2>
+    <p class="mb-8">
+      {{ dialogDescription == null ? "-" : dialogDescription }}
+    </p>
+
+    <a
+      href="#"
+      @click="closeDialog"
+      class="text-indigo-600 hover:text-indigo-900"
+      >Close</a
+    >
+  </Dialog>
+
+  <Dialog v-show="isEditDialogOpen"> test </Dialog>
 </template>
 
 <script setup>
@@ -85,36 +108,54 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { fetchData } from "/utilities/httpUtils.js";
 import Loading from "/src/components/Loading.vue";
+import Dialog from "/src/components/Dialog.vue";
 
 onMounted(async () => {
-  const url = "https://jsonplaceholder.typicode.com/todos/1";
-  const timeout = 5000; // Adjust the timeout value as needed (in milliseconds)
+  getTasksData();
+});
 
-  const result = await fetchData(url, timeout);
+const getTasksData = async () => {
+  const url = "http://127.0.0.1:8000/api/tasks";
+
+  const result = await fetchData(url);
 
   if ("error" in result) {
     // Handle the error
     console.error("Error:", result.error);
   } else {
     // Set the data
+    tasks.value = result.data;
     isLoading.value = false;
-    console.log("result", result);
   }
-});
+};
 
 const isLoading = ref(true);
+const isEditDialogOpen = ref(false);
+const isDialogOpen = ref(false);
+const dialogDescription = ref(null);
+const tasks = ref([]);
 
 const router = useRouter();
 
 const navigateToCreateForm = () => {
   router.push({ name: "task.create" });
 };
-const people = [
-  {
-    name: "Lindsay Walton",
-    title: "Front-end Developer",
-    email: "lindsay.walton@example.com",
-  },
-  // More people...
-];
+
+const closeDialog = () => {
+  isDialogOpen.value = false;
+};
+
+const showDescription = (description) => {
+  dialogDescription.value = description;
+  isDialogOpen.value = true;
+};
+
+const showEditDialog = (task) => {
+  router.push({
+    name: "task.edit",
+    query: {
+      id: task.id,
+    },
+  });
+};
 </script>

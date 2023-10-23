@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import TaskIndex from "/src/pages/Task/Index.vue";
 import TaskCreate from "/src/pages/Task/Create.vue";
+import TaskEdit from "/src/pages/Task/Edit.vue";
 
 const routes = [
   {
@@ -13,6 +14,12 @@ const routes = [
     path: "/create",
     component: TaskCreate,
     name: "task.create",
+  },
+  {
+    path: "/edit",
+    component: TaskEdit,
+    name: "task.edit",
+    props: true,
   },
 ];
 

@@ -1,11 +1,22 @@
-export async function fetchData(url, timeout, method = "GET", data = null) {
+export async function fetchData(
+  url,
+  method = "GET",
+  data = null,
+  timeout = 5000
+) {
   try {
     const response = await fetchWithTimeout(url, timeout, method, data);
+
+    const responseData = await response.json();
+
     if (response.ok) {
-      const responseData = await response.json();
       return responseData; // Return the data if the request is successful
     } else {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      if (response.status != 422) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      } else {
+        return responseData;
+      }
     }
   } catch (error) {
     // Handle errors and return an error object
@@ -22,6 +33,7 @@ export async function fetchWithTimeout(
   const init = {
     method: method,
     headers: {
+      accept: "application/json",
       "Content-Type": "application/json",
     },
     body: data ? JSON.stringify(data) : null,
