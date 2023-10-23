@@ -1,5 +1,6 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8">
+  <Loading v-if="isLoading" />
+  <div class="px-4 sm:px-6 lg:px-8" v-else>
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-base font-semibold leading-6 text-gray-900">Tasks</h1>
@@ -80,12 +81,13 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { fetchData } from "/utilities/httpUtils.js";
+import Loading from "/src/components/Loading.vue";
 
 onMounted(async () => {
-  const url = "https://jsonplaceholder.typicode.com/todos/1"; // Replace with your API endpoint
+  const url = "https://jsonplaceholder.typicode.com/todos/1";
   const timeout = 5000; // Adjust the timeout value as needed (in milliseconds)
 
   const result = await fetchData(url, timeout);
@@ -95,9 +97,12 @@ onMounted(async () => {
     console.error("Error:", result.error);
   } else {
     // Set the data
+    isLoading.value = false;
     console.log("result", result);
   }
 });
+
+const isLoading = ref(true);
 
 const router = useRouter();
 
