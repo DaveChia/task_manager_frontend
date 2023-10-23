@@ -58,20 +58,27 @@
 
     <div class="mt-6 flex items-center justify-end gap-x-6">
       <button
-        @click="navigateToIndexPage"
+        @click.prevent="navigateToIndexPage"
         type="button"
         class="text-sm font-semibold leading-6 text-gray-900"
       >
         Cancel
       </button>
       <button
-        type="submit"
+        @click.prevent="toggleConfirmationDialog"
         class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
       >
         Save
       </button>
     </div>
   </form>
+
+  <ActionConfirmationDialog
+    v-if="isConfirmationDialogOpen"
+    @confirm-action="submitForm"
+    @cancel-action="toggleConfirmationDialog"
+  >
+  </ActionConfirmationDialog>
 </template>
 
 <script setup>
@@ -79,10 +86,12 @@ import { useRouter } from "vue-router";
 import { fetchData } from "/utilities/httpUtils.js";
 import { ref } from "vue";
 import ValidationErrors from "/src/components/ValidationErrors.vue";
+import ActionConfirmationDialog from "/src/components/ActionConfirmationDialog.vue";
 
 const router = useRouter();
 const taskNameValidationErrors = ref([]);
 const taskDescriptionValidationErrors = ref([]);
+const isConfirmationDialogOpen = ref(false);
 const form = ref({
   name: null,
   description: null,
@@ -93,6 +102,8 @@ const navigateToIndexPage = () => {
 };
 
 const submitForm = async () => {
+  toggleConfirmationDialog();
+
   const url = "http://127.0.0.1:8000/api/tasks";
 
   const result = await fetchData(url, "POST", form.value);
@@ -118,5 +129,9 @@ const handleValidationErrors = (errors) => {
         break;
     }
   }
+};
+
+const toggleConfirmationDialog = () => {
+  isConfirmationDialogOpen.value = !isConfirmationDialogOpen.value;
 };
 </script>
