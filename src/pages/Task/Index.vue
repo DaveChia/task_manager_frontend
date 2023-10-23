@@ -80,7 +80,24 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { fetchData } from "/utilities/httpUtils.js";
+
+onMounted(async () => {
+  const url = "https://jsonplaceholder.typicode.com/todos/1"; // Replace with your API endpoint
+  const timeout = 5000; // Adjust the timeout value as needed (in milliseconds)
+
+  const result = await fetchData(url, timeout);
+
+  if ("error" in result) {
+    // Handle the error
+    console.error("Error:", result.error);
+  } else {
+    // Set the data
+    console.log("result", result);
+  }
+});
 
 const router = useRouter();
 
