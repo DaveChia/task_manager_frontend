@@ -136,7 +136,7 @@ onMounted(async () => {
 });
 
 const getTaskData = async () => {
-  const url = "http://127.0.0.1:8000/api/tasks/" + taskId;
+  const url = import.meta.env.VITE_API_URL + "/tasks/" + taskId;
 
   const result = await fetchData(url);
 
@@ -163,7 +163,7 @@ const toggleConfirmationDialog = () => {
 const submitForm = async () => {
   toggleConfirmationDialog();
 
-  const url = "http://127.0.0.1:8000/api/tasks/" + taskId;
+  const url = import.meta.env.VITE_API_URL + "/tasks/" + taskId;
 
   const result = await fetchData(url, "PUT", form.value);
 

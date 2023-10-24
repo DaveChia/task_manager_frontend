@@ -134,7 +134,7 @@ const navigateToIndexPage = () => {
 const submitForm = async () => {
   toggleConfirmationDialog();
 
-  const url = "http://127.0.0.1:8000/api/tasks";
+  const url = import.meta.env.VITE_API_URL + "/tasks";
 
   const result = await fetchData(url, "POST", form.value);
 
