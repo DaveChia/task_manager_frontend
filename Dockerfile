@@ -1,11 +1,17 @@
-# Use the official Nginx image as a parent image
-FROM nginx
+# Use the official Node.js image as a base image
+FROM node:14
 
-# Remove the default Nginx configuration file
-RUN rm /etc/nginx/conf.d/default.conf
+# Set the working directory in the container
+WORKDIR /app
 
-# Copy your Vue.js app's build files to the Nginx document root
-COPY dist/ /usr/share/nginx/html
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
 
-# Expose port 80
-EXPOSE 80
+# Install project dependencies
+RUN npm install
+
+# Copy the rest of your project files to the container
+COPY . .
+
+# Start your Vue.js project using the Vite development server
+CMD ["npm", "run", "dev"]
