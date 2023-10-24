@@ -140,7 +140,7 @@ const submitForm = async () => {
 
   const url = import.meta.env.VITE_API_URL + "/tasks";
 
-  const result = await fetchData(url, "POST", form.value);
+  const result = await fetchData(url, true, "POST", form.value);
 
   if ("error" in result) {
     // Handle the error

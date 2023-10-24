@@ -130,7 +130,7 @@ onMounted(async () => {
 const getTasksData = async () => {
   const url = import.meta.env.VITE_API_URL + "/tasks";
 
-  const result = await fetchData(url);
+  const result = await fetchData(url, true);
 
   if ("error" in result) {
     // Handle the error

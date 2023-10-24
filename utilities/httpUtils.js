@@ -1,11 +1,18 @@
 export async function fetchData(
   url,
+  isInternalApi = false,
   method = "GET",
   data = null,
   timeout = 5000
 ) {
   try {
-    const response = await fetchWithTimeout(url, timeout, method, data);
+    const response = await fetchWithTimeout(
+      url,
+      isInternalApi,
+      timeout,
+      method,
+      data
+    );
 
     const responseData = await response.json();
 
@@ -26,6 +33,7 @@ export async function fetchData(
 
 export async function fetchWithTimeout(
   url,
+  isInternalApi = false,
   timeout,
   method = "GET",
   data = null
@@ -38,6 +46,11 @@ export async function fetchWithTimeout(
     },
     body: data ? JSON.stringify(data) : null,
   };
+
+  //  Set the API key to call internal task management APIs in the internal backend server
+  if (isInternalApi) {
+    init.headers["x-api-key"] = import.meta.env.VITE_API_KEY;
+  }
 
   return Promise.race([
     fetch(url, init),

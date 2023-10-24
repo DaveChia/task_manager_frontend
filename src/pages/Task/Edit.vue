@@ -138,7 +138,7 @@ onMounted(async () => {
 const getTaskData = async () => {
   const url = import.meta.env.VITE_API_URL + "/tasks/" + taskId;
 
-  const result = await fetchData(url);
+  const result = await fetchData(url, true);
 
   if ("error" in result) {
     // Handle the error
@@ -168,7 +168,7 @@ const submitForm = async () => {
 
   const url = import.meta.env.VITE_API_URL + "/tasks/" + taskId;
 
-  const result = await fetchData(url, "PUT", form.value);
+  const result = await fetchData(url, true, "PUT", form.value);
 
   if ("error" in result) {
     // Handle the error
