@@ -134,15 +134,17 @@ const navigateToIndexPage = () => {
 const submitForm = async () => {
   toggleConfirmationDialog();
 
+  //  Reset the validation errors if there are any
+  taskNameValidationErrors.value = [];
+  taskDescriptionValidationErrors.value = [];
+
   const url = import.meta.env.VITE_API_URL + "/tasks";
 
   const result = await fetchData(url, "POST", form.value);
 
   if ("error" in result) {
     // Handle the error
-    console.error("Error:", result.error);
   } else if ("errors" in result) {
-    console.log(result);
     handleValidationErrors(result.errors);
   } else {
     navigateToIndexPage();

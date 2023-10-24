@@ -58,7 +58,7 @@
                     {{ task.name }}
                   </td>
                   <td class="px-3 py-4 whitespace-nowrap truncate max-w-xs">
-                    {{ task.description == null ? "-" : task.description }}
+                    {{ task.description }}
                   </td>
 
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -134,7 +134,6 @@ const getTasksData = async () => {
 
   if ("error" in result) {
     // Handle the error
-    console.error("Error:", result.error);
   } else {
     // Set the data
     tasks.value = result.data;
@@ -143,7 +142,6 @@ const getTasksData = async () => {
 };
 
 const isLoading = ref(true);
-const isEditDialogOpen = ref(false);
 const isDialogOpen = ref(false);
 const dialogDescription = ref(null);
 const tasks = ref([]);

@@ -142,7 +142,6 @@ const getTaskData = async () => {
 
   if ("error" in result) {
     // Handle the error
-    console.error("Error:", result.error);
   } else {
     // Set the data
     form.value.name = result.data.name;
@@ -163,13 +162,16 @@ const toggleConfirmationDialog = () => {
 const submitForm = async () => {
   toggleConfirmationDialog();
 
+  //  Reset the validation errors if there are any
+  taskNameValidationErrors.value = [];
+  taskDescriptionValidationErrors.value = [];
+
   const url = import.meta.env.VITE_API_URL + "/tasks/" + taskId;
 
   const result = await fetchData(url, "PUT", form.value);
 
   if ("error" in result) {
     // Handle the error
-    console.error("Error:", result.error);
   } else if ("errors" in result) {
     handleValidationErrors(result.errors);
   } else {
