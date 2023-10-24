@@ -13,11 +13,15 @@ RUN npm install
 # Copy the rest of the project files to the container
 COPY . .
 
+# Add your entrypoint script to the container
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 # Build your Vue project (you might need to adjust this command)
 RUN npm run build
 
 # Expose the port the app will run on
 EXPOSE 8080
 
-# Start the app
-CMD [ "npm", "run", "build" ]
+# Start the app using the entrypoint script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
