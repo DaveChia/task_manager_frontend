@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import TaskIndex from "/src/pages/Task/Index.vue";
 import TaskCreate from "/src/pages/Task/Create.vue";
 import TaskEdit from "/src/pages/Task/Edit.vue";
+import NotFound from "/src/pages/NotFound.vue";
 
 const routes = [
   {
@@ -23,9 +24,9 @@ const routes = [
   },
   // Fallback route, matches any route that doesn't exist
   {
-    path: "*",
-    component: TaskIndex,
-    name: "task.index",
+    path: "/:catchAll(.*)",
+    component: NotFound,
+    name: "not-found",
   },
 ];
 
