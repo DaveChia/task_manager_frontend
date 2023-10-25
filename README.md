@@ -1,9 +1,9 @@
-# Simple Task Management Frontend Web App build with Vue, Vite and Docker
+# Simple Task Management Frontend Web App built with Vue, Vite and Docker
 
 This is a template README file for a simple task management application for the customer
 service operations department.
 
-The application should allow users to add a new task, view all tasks, and mark a task as completed.
+The application allows users to add a new task, view all tasks, and mark a task as completed.
 
 ## Getting Started
 
