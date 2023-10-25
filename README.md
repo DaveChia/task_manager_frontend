@@ -1,7 +1,49 @@
-# Vue 3 + Vite
+# Simple Task Management Frontend Web App build with Vue, Vite and Docker
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+This is a template README file for a simple task management application for the customer
+service operations department.
 
-## Recommended IDE Setup
+The application should allow users to add a new task, view all tasks, and mark a task as completed.
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## Getting Started
+
+To get started with this project, follow these steps:
+
+### Prerequisites
+
+1. Node.js and npm installed on your machine.
+2. Docker installed on your machine.
+
+### Installation
+
+1. Clone this repository to your local machine:
+
+```
+git clone https://github.com/DaveChia/task_manager_frontend.git
+cd task_manager_frontend
+```
+
+2. Install the project dependencies
+
+```
+npm install
+```
+
+3. Set up the .env, copy .env.example into .env
+
+   - VITE_API_KEY=yoursecretapikey // This is the api key required by the backend API server to authorize api calls
+   - VITE_API_URL=http://localhost:3000 // This is the url of the backend API server to call
+
+4. Build the Docker Container
+
+```
+docker build -t your-vue-app .
+```
+
+5. Run the Docker Container
+
+```
+docker run -p 8081:5173 your-vue-app   // Change the ports if needed
+```
+
+This will start the Docker container, and app will be accessible at http://localhost:8081.
