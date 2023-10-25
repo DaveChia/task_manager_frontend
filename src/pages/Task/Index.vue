@@ -4,7 +4,14 @@
     <div class="sm:flex sm:items-center">
       <div class="sm:flex-auto">
         <h1 class="text-base font-semibold leading-6 text-gray-900">Tasks</h1>
-        <p class="mt-2 text-sm text-gray-700">A list of all tasks</p>
+        <p class="mt-2 mb-2 text-sm text-gray-700">
+          The tasks are arranged with non-completed tasks being on top, in order
+          of creation timestamp.
+        </p>
+        <p class="mt-2 text-sm text-gray-700">
+          Hover and click on a truncated description to view the full
+          description text.
+        </p>
       </div>
       <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
         <button
@@ -30,7 +37,13 @@
                 <tr>
                   <th
                     scope="col"
-                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6"
+                    class="px-3 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"
+                  >
+                    ID
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900"
                   >
                     Name
                   </th>
@@ -39,6 +52,12 @@
                     class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
                   >
                     Description
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+                  >
+                    Created At
                   </th>
                   <th
                     scope="col"
@@ -54,11 +73,24 @@
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
                 <tr v-for="task in tasks" :key="task.id">
-                  <td class="px-3 py-4 whitespace-nowrap truncate max-w-xs">
+                  <td class="px-3 py-3.5 pl-4 pr-3 text-sm text-gray-500">
+                    {{ task.id }}
+                  </td>
+
+                  <td
+                    class="px-3 py-3.5 pl-4 pr-3 whitespace-nowrap truncate max-w-xs"
+                  >
                     {{ task.name }}
                   </td>
-                  <td class="px-3 py-4 whitespace-nowrap truncate max-w-xs">
+                  <td
+                    class="px-3 py-4 whitespace-nowrap truncate max-w-xs cursor-pointer"
+                    @click="showDescription(task.description)"
+                  >
                     {{ task.description }}
+                  </td>
+
+                  <td class="px-3 py-3.5 whitespace-nowrap truncate max-w-xs">
+                    {{ convertToLocaleTime(task.created_at) }}
                   </td>
 
                   <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
@@ -80,12 +112,6 @@
                   >
                     <a
                       href="#"
-                      @click="showDescription(task.description)"
-                      class="text-indigo-600 hover:text-indigo-900 mr-2"
-                      >Description</a
-                    >
-                    <a
-                      href="#"
                       @click="showEditDialog(task)"
                       class="text-indigo-600 hover:text-indigo-900"
                       >Edit<span class="sr-only">, {{ task.name }}</span></a
@@ -102,7 +128,7 @@
 
   <Dialog v-show="isDialogOpen">
     <h2 class="mb-8 font-bold">Description</h2>
-    <p class="mb-8">
+    <p class="mb-8 break-words">
       {{ dialogDescription == null ? "-" : dialogDescription }}
     </p>
 
@@ -159,6 +185,11 @@ const closeDialog = () => {
 const showDescription = (description) => {
   dialogDescription.value = description;
   isDialogOpen.value = true;
+};
+
+const convertToLocaleTime = (timestamp) => {
+  const date = new Date(timestamp);
+  return date.toLocaleString();
 };
 
 const showEditDialog = (task) => {
