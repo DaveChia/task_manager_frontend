@@ -21,6 +21,12 @@ const routes = [
     name: "task.edit",
     props: true,
   },
+  // Fallback route, matches any route that doesn't exist
+  {
+    path: "*",
+    component: TaskIndex,
+    name: "task.index",
+  },
 ];
 
 const router = createRouter({
